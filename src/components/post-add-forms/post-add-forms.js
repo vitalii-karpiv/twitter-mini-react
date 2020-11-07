@@ -4,7 +4,7 @@ import "./post-add-form.css";
 
 const PostAddForm = () => {
   return (
-    <div>
+    <div className="bottom-panel">
       <input
         className="from-control new-post-label"
         placeholder="Про що думаєте зараз?"
