@@ -15,10 +15,17 @@ export default class App extends React.Component {
 
     this.state = {
       data: [
-        { label: "hello", important: true, id: "dad" },
-        { label: "How are u?", important: false, id: "dadfdf" },
-        { label: "I`m learning React", important: false, id: "dadfdsf" }
-      ]
+        { label: "hello", important: true, like: false, id: "21321" },
+        { label: "How are u?", important: false, like: false, id: "dadfdf" },
+        {
+          label: "I`m learning React",
+          important: false,
+          like: false,
+          id: "dadfdsf"
+        }
+      ],
+      term: "",
+      filter: "all"
     };
   }
 
@@ -49,15 +56,72 @@ export default class App extends React.Component {
     });
   };
 
+  onToggleLike = (id) => {
+    this.setState(({ data }) => {
+      console.log("liked");
+      const index = data.findIndex((elem) => elem.id === id);
+
+      const old = data[index];
+
+      const newItem = { ...old, like: !old.like };
+
+      const newArray = [
+        ...data.slice(0, index),
+        newItem,
+        ...data.slice(index + 1)
+      ];
+
+      return { data: newArray };
+    });
+  };
+
+  searchPost = (posts, term) => {
+    if (posts.length === 0) {
+      return posts;
+    }
+
+    return posts.filter((item) => {
+      return item.label.indexOf(term) > -1;
+    });
+  };
+
+  onUpdateSearch = (term) => {
+    this.setState({ term });
+  };
+
+  filterPosts = (posts, filter) => {
+    if (filter === "like") {
+      return posts.filter((item) => item.like);
+    } else {
+      return posts;
+    }
+  };
+
+  onSetFilter = (filter) => {
+    this.setState({ filter });
+    console.log(this.state.filter);
+  };
+
   render() {
+    const { data, term, filter } = this.state;
+
+    const total = data.length;
+    const liked = data.filter((elem) => elem.like).length;
+
+    const visiblePosts = this.filterPosts(this.searchPost(data, term), filter);
+
     return (
       <Fragment>
-        <AppHeader />
+        <AppHeader totalElem={total} likedElem={liked} />
         <div className="search-panel d-flex">
-          <SearchPaner />
-          <PostStatusFilter />
+          <SearchPaner onUpdateSearch={this.onUpdateSearch} />
+          <PostStatusFilter filter={filter} onSetFilter={this.onSetFilter} />
         </div>
-        <PostList posts={this.state.data} onDelete={this.deleteItem} />
+        <PostList
+          posts={visiblePosts}
+          onDelete={this.deleteItem}
+          onLike={this.onToggleLike}
+        />
         <PostAddForm onAdd={this.addItem} />
       </Fragment>
     );

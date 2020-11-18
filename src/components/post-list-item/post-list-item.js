@@ -7,8 +7,7 @@ export default class PostListItem extends React.Component {
     super(props);
 
     this.state = {
-      important: false,
-      like: false
+      important: false
     };
   }
 
@@ -18,15 +17,9 @@ export default class PostListItem extends React.Component {
     }));
   };
 
-  toggleLike = () => {
-    this.setState(({ like }) => ({
-      like: !like
-    }));
-  };
-
   render() {
-    const { label, onDelete } = this.props;
-    const { important, like } = this.state;
+    const { label, onDelete, onLike, like } = this.props;
+    const { important } = this.state;
 
     let classNames = "app-list-item d-flex justify-content-between";
 
@@ -40,7 +33,7 @@ export default class PostListItem extends React.Component {
 
     return (
       <div className={classNames}>
-        <span className="app-list-item-label" onClick={this.toggleLike}>
+        <span className="app-list-item-label" onClick={onLike}>
           {label}
         </span>
         <div className="d-flex justify-content-center align-item-center">
